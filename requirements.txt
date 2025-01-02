@@ -1,6 +1,6 @@
 Flask
 Gunicorn
 Numpy
-Scikit-learn
+Scikit-learn==1.5.0
 Pandas
 Matplotlib
