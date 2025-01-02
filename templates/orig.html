@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ENjt0lDkZOxsY5yV6t3mf8pMDtnLyn+PGoZjEh5wD1yGMsMEkgLa6JkMskK9WHR" crossorigin="anonymous">
+    </head>
+    <body>
+        <h3>
+            Kidney Stone Prediction Form
+        </h3>
+
+        <div>
+            <form action = "/predict" method = "POST">
+                <label for = "gravity">Specific Gravity</label>
+                <input type = "text" id = "gravity" name = "gravity">
+                <br>
+
+                <label for = "ph">pH</label>
+                <input type = "text" id = "ph" name = "ph">
+                <br>
+
+                <label for = "osmolarity">Osmolarity</label>
+                <input type = "text" id = "osmolarity" name = "osmolarity">
+                <br>
+
+                <label for = "conductivity">Conductivity</label>
+                <input type = "text" id = "conductivity" name = "conductivity">
+                <br>
+
+                <label for = "urea">Urea Concentration</label>
+                <input type = "text" id = "urea" name = "urea">
+                <br>
+
+                <label for = "calcium">Calcium Concentration</label>
+                <input type = "text" id = "calcium" name = "calcium">
+                <br>
+                
+                <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+            </form>
+            <br>
+            <br>
+
+            {{ prediction_text}}
+
+        </div>
+    </body>
+</html>
