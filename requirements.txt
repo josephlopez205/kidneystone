@@ -1,3 +1,7 @@
 Flask
 Gunicorn
 Numpy
+Sklearn
+Pickle
+Pandas
+Matplotlib
