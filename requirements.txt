@@ -1,7 +1,7 @@
 Flask
 Gunicorn
 Numpy
-Sklearn
+Scikit-learn
 Pickle
 Pandas
 Matplotlib
