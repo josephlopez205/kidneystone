@@ -3,11 +3,11 @@ from flask import Flask, request, jsonify, render_template
 import pickle
 
 # Create flask app
-flask_app = Flask(__name__)
+app = Flask(__name__)
 model = pickle.load(open("saved_steps.pkl", "rb"))
 model = model["model"]
 
-@flask_app.route("/")
+@app.route("/")
 def Home():
     return render_template("index.html", prediction_text = "")
 
@@ -25,7 +25,7 @@ def float_converter(array):
 def array_converter(i):
     return [np.array(i)]
 
-@flask_app.route("/predict", methods = ["POST"])
+@app.route("/predict", methods = ["POST"])
 def predict():
     float_features = float_converter(request.form.values())
     features = array_converter(float_features)
@@ -35,4 +35,4 @@ def predict():
     return render_template("index.html", prediction_text = text)
 
 if __name__ == "__main__":
-    flask_app.run(debug=True)
+    app.run(debug=True)
