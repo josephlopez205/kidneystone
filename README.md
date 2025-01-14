@@ -1,4 +1,5 @@
 # Kidney Stone
+This application aims to predict whether or not kidney stones are present given a urine sample.
 
 You can visit the web service [here](https://kidneystone-d8l1.onrender.com/).
 
