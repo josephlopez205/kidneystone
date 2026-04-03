@@ -30,9 +30,10 @@ def predict():
     float_features = float_converter(request.form.values())
     features = array_converter(float_features)
     prediction = model.predict(features)
+    probability = model.predict_proba(features)[0][1]  # risk probability
     text = text_renderer(prediction)
     
-    return render_template("index.html", prediction_text = text)
+    return render_template("index.html", prediction_text=text, risk_score=round(probability * 100, 1))
 
 if __name__ == "__main__":
     app.run(debug=True)
