@@ -1,219 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kidney Stone Prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    .ks-card {
+      background: #fff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    }
 
-  .ks-wrap {
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    background: #f0f4f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
-  }
+    .ks-header {
+      background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
+      padding: 2rem 2rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .ks-card {
-    background: #fff;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 520px;
-    overflow: hidden;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
-  }
+    .ks-header::before {
+      content: '';
+      position: absolute;
+      right: -30px; top: -30px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .ks-header::after {
+      content: '';
+      position: absolute;
+      right: 30px; top: 40px;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
 
-  .ks-header {
-    background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
-    padding: 2rem 2rem 1.6rem;
-    position: relative;
-    overflow: hidden;
-  }
+    .ks-icon {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
 
-  .ks-header::before {
-    content: '';
-    position: absolute;
-    right: -30px; top: -30px;
-    width: 140px; height: 140px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
-  }
-  .ks-header::after {
-    content: '';
-    position: absolute;
-    right: 30px; top: 40px;
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
+    .ks-icon svg { width: 22px; height: 22px; fill: #fff; }
 
-  .ks-icon {
-    width: 44px; height: 44px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 14px;
-  }
+    .ks-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
 
-  .ks-icon svg { width: 22px; height: 22px; fill: #fff; }
+    .ks-header p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 300;
+    }
 
-  .ks-header h1 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #fff;
-    letter-spacing: -0.3px;
-    margin-bottom: 4px;
-  }
+    .ks-body {
+      padding: 1.8rem 2rem;
+    }
 
-  .ks-header p {
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-    font-weight: 300;
-  }
+    .ks-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
 
-  .ks-body {
-    padding: 1.8rem 2rem;
-  }
+    .ks-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-  .ks-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+    .ks-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #64748b;
+    }
 
-  .ks-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+    .ks-unit {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-left: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
 
-  .ks-field.full { grid-column: 1 / -1; }
+    .ks-input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: #1e293b;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+      width: 100%;
+    }
 
-  .ks-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: #64748b;
-  }
+    .ks-input::placeholder { color: #cbd5e1; font-size: 14px; }
 
-  .ks-unit {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: #94a3b8;
-    margin-left: 4px;
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: 400;
-  }
+    .ks-input:focus {
+      border-color: #2563a8;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
+    }
 
-  .ks-input {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 400;
-    color: #1e293b;
-    background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 10px 14px;
-    outline: none;
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-    width: 100%;
-  }
+    .ks-input.error { border-color: #ef4444; background: #fff5f5; }
+    .ks-input.valid { border-color: #10b981; }
 
-  .ks-input::placeholder { color: #cbd5e1; font-size: 14px; }
+    .ks-divider {
+      border: none;
+      border-top: 1px solid #f1f5f9;
+      margin: 1.4rem 0;
+    }
 
-  .ks-input:focus {
-    border-color: #2563a8;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
-  }
+    .ks-btn {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      cursor: pointer;
+      letter-spacing: 0.2px;
+      transition: opacity 0.15s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
 
-  .ks-input.error { border-color: #ef4444; background: #fff5f5; }
-  .ks-input.valid { border-color: #10b981; }
+    .ks-btn:hover { opacity: 0.9; }
+    .ks-btn:active { transform: scale(0.99); }
+    .ks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .ks-hint {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-top: 2px;
-  }
+    .ks-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
 
-  .ks-divider {
-    border: none;
-    border-top: 1px solid #f1f5f9;
-    margin: 1.4rem 0;
-  }
+    .ks-result {
+      margin-top: 1.2rem;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
 
-  .ks-btn {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    color: #fff;
-    background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
-    border: none;
-    border-radius: 12px;
-    padding: 13px;
-    cursor: pointer;
-    letter-spacing: 0.2px;
-    transition: opacity 0.15s, transform 0.1s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  .ks-btn:hover { opacity: 0.9; }
-  .ks-btn:active { transform: scale(0.99); }
-  .ks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* Red = at risk, Green = not at risk */
+    .ks-result.positive { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .ks-result.negative { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
-  .ks-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+    .ks-result-icon { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+    .ks-result-title { font-weight: 600; font-size: 13px; letter-spacing: 0.2px; }
+    .ks-result-sub { font-size: 12px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
 
-  .ks-result {
-    margin-top: 1.2rem;
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    display: none;
-    align-items: flex-start;
-    gap: 10px;
-    animation: fadeIn 0.3s ease;
-  }
+    .ks-footer {
+      padding: 1.1rem 2rem;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      text-align: center;
+    }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .ks-footer p {
+      font-size: 11.5px;
+      color: #94a3b8;
+      line-height: 1.7;
+    }
 
-  .ks-result.show { display: flex; }
-  .ks-result.positive { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-  .ks-result.negative { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .ks-footer strong { color: #64748b; font-weight: 500; }
 
-  .ks-result-icon { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+    .ks-footer a {
+      color: #2563a8;
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.15s;
+    }
 
-  .ks-result-text { flex: 1; }
-  .ks-result-title { font-weight: 600; font-size: 13px; letter-spacing: 0.2px; }
-  .ks-result-sub { font-size: 12px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
+    .ks-footer a:hover { opacity: 0.7; text-decoration: underline; }
 
-  .ks-footer {
-    padding: 1rem 2rem;
-    background: #f8fafc;
-    border-top: 1px solid #f1f5f9;
-    text-align: center;
-  }
+    .ks-footer .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: #2563a8;
+      font-weight: 500;
+      text-decoration: none;
+    }
 
-  .ks-footer p {
-    font-size: 11.5px;
-    color: #94a3b8;
-    line-height: 1.6;
-  }
+    .ks-footer .github-link svg {
+      width: 14px; height: 14px;
+      fill: #2563a8;
+    }
 
-  .ks-footer strong { color: #64748b; font-weight: 500; }
+    .ks-footer .github-link:hover { opacity: 0.7; }
 
-  @media (max-width: 420px) {
-    .ks-grid { grid-template-columns: 1fr; }
-    .ks-body { padding: 1.4rem 1.2rem; }
-    .ks-header { padding: 1.6rem 1.2rem; }
-  }
-</style>
+    @media (max-width: 420px) {
+      .ks-grid { grid-template-columns: 1fr; }
+      .ks-body { padding: 1.4rem 1.2rem; }
+      .ks-header { padding: 1.6rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
 
-<div class="ks-wrap">
   <div class="ks-card">
+
     <div class="ks-header">
       <div class="ks-icon">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -225,43 +249,37 @@
     </div>
 
     <div class="ks-body">
-      <form id="ksForm" action="/predict" method="POST" onsubmit="handleSubmit(event)" novalidate>
+      <form id="ksForm" action="/predict" method="POST" novalidate>
         <div class="ks-grid">
 
           <div class="ks-field">
             <label class="ks-label" for="gravity">Specific Gravity <span class="ks-unit">g/mL</span></label>
             <input class="ks-input" type="text" id="gravity" name="gravity" placeholder="e.g. 1.020" autocomplete="off">
-            <span class="ks-hint">Normal: 1.005–1.030</span>
           </div>
 
           <div class="ks-field">
             <label class="ks-label" for="ph">pH Level <span class="ks-unit">0–14</span></label>
             <input class="ks-input" type="text" id="ph" name="ph" placeholder="e.g. 6.5" autocomplete="off">
-            <span class="ks-hint">Normal: 4.5–8.0</span>
           </div>
 
           <div class="ks-field">
             <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm/kg</span></label>
             <input class="ks-input" type="text" id="osmolarity" name="osmolarity" placeholder="e.g. 750" autocomplete="off">
-            <span class="ks-hint">Normal: 300–900</span>
           </div>
 
           <div class="ks-field">
             <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mS/cm</span></label>
             <input class="ks-input" type="text" id="conductivity" name="conductivity" placeholder="e.g. 14.0" autocomplete="off">
-            <span class="ks-hint">Normal: 5–38</span>
           </div>
 
           <div class="ks-field">
             <label class="ks-label" for="urea">Urea Concentration <span class="ks-unit">mmol/L</span></label>
             <input class="ks-input" type="text" id="urea" name="urea" placeholder="e.g. 320" autocomplete="off">
-            <span class="ks-hint">Normal: 100–500</span>
           </div>
 
           <div class="ks-field">
             <label class="ks-label" for="calcium">Calcium Concentration <span class="ks-unit">mmol/L</span></label>
             <input class="ks-input" type="text" id="calcium" name="calcium" placeholder="e.g. 4.0" autocomplete="off">
-            <span class="ks-hint">Normal: 2.0–8.0</span>
           </div>
 
         </div>
@@ -276,75 +294,74 @@
         </button>
 
         {% if prediction_text %}
-        <div class="ks-result show {{ 'positive' if 'Yes' in prediction_text else 'negative' }}">
+        <div class="ks-result {{ 'positive' if '1' in prediction_text else 'negative' }}">
           <svg class="ks-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <div class="ks-result-text">
-            <div class="ks-result-title">Prediction Result</div>
+          <div>
+            <div class="ks-result-title">
+              {% if '1' in prediction_text %}
+                At Risk: Kidney Stone Detected
+              {% else %}
+                No Risk Detected
+              {% endif %}
+            </div>
             <div class="ks-result-sub">{{ prediction_text }}</div>
           </div>
         </div>
         {% endif %}
+
       </form>
     </div>
 
     <div class="ks-footer">
-      <p><strong>For demonstration purposes only.</strong> This tool does not replace clinical diagnosis. Please consult a qualified healthcare professional.</p>
+      <p><strong>For demonstration purposes only.</strong> This tool does not replace clinical diagnosis.<br>Please consult a qualified healthcare professional.</p>
+      <p style="margin-top: 10px; color: #64748b; font-size: 12px;">Created by <strong>Joseph Emmanuel Lopez</strong></p>
+      <a class="github-link" href="https://github.com/josephlopez205" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+        </svg>
+        github.com/josephlopez205
+      </a>
     </div>
+
   </div>
-</div>
 
-<script>
-  const inputs = document.querySelectorAll('.ks-input');
-  inputs.forEach(inp => {
-    inp.addEventListener('input', () => {
-      inp.classList.remove('error');
-      if (inp.value.trim() !== '' && !isNaN(parseFloat(inp.value))) {
-        inp.classList.add('valid');
-      } else {
-        inp.classList.remove('valid');
-      }
-    });
-  });
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    let valid = true;
+  <script>
+    const inputs = document.querySelectorAll('.ks-input');
     inputs.forEach(inp => {
-      if (!inp.value.trim() || isNaN(parseFloat(inp.value))) {
-        inp.classList.add('error');
-        inp.classList.remove('valid');
-        valid = false;
-      }
+      inp.addEventListener('input', () => {
+        inp.classList.remove('error');
+        if (inp.value.trim() !== '' && !isNaN(parseFloat(inp.value))) {
+          inp.classList.add('valid');
+        } else {
+          inp.classList.remove('valid');
+        }
+      });
     });
 
-    if (!valid) {
-      showResult('error', 'Missing or invalid values', 'Please fill in all fields with valid numeric values.');
-      return;
-    }
+    document.getElementById('ksForm').addEventListener('submit', function(e) {
+      let valid = true;
+      inputs.forEach(inp => {
+        if (!inp.value.trim() || isNaN(parseFloat(inp.value))) {
+          inp.classList.add('error');
+          inp.classList.remove('valid');
+          valid = false;
+        }
+      });
+      if (!valid) { e.preventDefault(); return; }
 
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Analyzing…`;
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Analyzing…`;
+    });
+  </script>
 
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Run Prediction`;
-      e.target.submit();
-    }, 1200);
-  }
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 
-  function showResult(type, title, sub) {
-    const box = document.getElementById('resultBox');
-    box.className = 'ks-result show ' + (type === 'error' ? 'positive' : type === 'positive' ? 'positive' : 'negative');
-    document.getElementById('resultTitle').textContent = title;
-    document.getElementById('resultSub').textContent = sub;
-  }
-
-  const style = document.createElement('style');
-  style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
-  document.head.appendChild(style);
-</script>
+</body>
+</html>
