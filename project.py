@@ -25,15 +25,18 @@ def float_converter(array):
 def array_converter(i):
     return [np.array(i)]
 
-@app.route("/predict", methods = ["POST"])
+@app.route('/predict', methods=['POST'])
 def predict():
-    float_features = float_converter(request.form.values())
-    features = array_converter(float_features)
-    prediction = model.predict(features)
-    probability = model.predict_proba(features)[0][1]  # risk probability
-    text = text_renderer(prediction)
-    
-    return render_template("index.html", prediction_text=text, risk_score=round(probability * 100, 1))
+    try:
+        float_features = float_converter(request.form.values())
+        features = array_converter(float_features)
+        prediction = model.predict(features)
+        probability = model.predict_proba(features)[0][1]
+        risk_score = round(float(probability) * 100, 1)
+        text = text_renderer(prediction)
+        return render_template("index.html", prediction_text=text, risk_score=risk_score)
+    except Exception as e:
+        return render_template("index.html", prediction_text=str(e), risk_score=None)
 
 if __name__ == "__main__":
     app.run(debug=True)
