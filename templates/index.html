@@ -275,18 +275,19 @@
           Run Prediction
         </button>
 
-        <div class="ks-result" id="resultBox">
-          <svg class="ks-result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        {% if prediction_text %}
+        <div class="ks-result show {{ 'positive' if 'Yes' in prediction_text else 'negative' }}">
+          <svg class="ks-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
             <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
           <div class="ks-result-text">
-            <div class="ks-result-title" id="resultTitle"></div>
-            <div class="ks-result-sub" id="resultSub"></div>
+            <div class="ks-result-title">Prediction Result</div>
+            <div class="ks-result-sub">{{ prediction_text }}</div>
           </div>
         </div>
-
+        {% endif %}
       </form>
     </div>
 
