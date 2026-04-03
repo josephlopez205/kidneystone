@@ -76,9 +76,7 @@
       font-weight: 300;
     }
 
-    .ks-body {
-      padding: 1.8rem 2rem;
-    }
+    .ks-body { padding: 1.8rem 2rem; }
 
     .ks-grid {
       display: grid;
@@ -160,7 +158,6 @@
     .ks-btn:hover { opacity: 0.9; }
     .ks-btn:active { transform: scale(0.99); }
     .ks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
     .ks-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
 
     .ks-result {
@@ -177,7 +174,6 @@
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Red = at risk, Green = not at risk */
     .ks-result.positive { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .ks-result.negative { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
@@ -185,6 +181,76 @@
     .ks-result-title { font-weight: 600; font-size: 13px; letter-spacing: 0.2px; }
     .ks-result-sub { font-size: 12px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
 
+    /* Gauge */
+    .ks-gauge-card {
+      margin-top: 1.2rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem 1rem;
+      animation: fadeIn 0.4s ease 0.1s both;
+    }
+
+    .ks-gauge-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 0.8rem;
+      text-align: center;
+    }
+
+    .ks-gauge-svg {
+      display: block;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    .ks-gauge-center {
+      text-align: center;
+      margin-top: 0.4rem;
+    }
+
+    .ks-gauge-score {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1e293b;
+      font-family: 'DM Mono', monospace;
+      line-height: 1;
+    }
+
+    .ks-gauge-sublabel {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .ks-gauge-bands {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .band {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .band.low    { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .band.medium { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .band.high   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    .band.low.active    { background: #15803d; color: #fff; border-color: #15803d; }
+    .band.medium.active { background: #b45309; color: #fff; border-color: #b45309; }
+    .band.high.active   { background: #b91c1c; color: #fff; border-color: #b91c1c; }
+
+    /* Footer */
     .ks-footer {
       padding: 1.1rem 2rem;
       background: #f8fafc;
@@ -200,15 +266,6 @@
 
     .ks-footer strong { color: #64748b; font-weight: 500; }
 
-    .ks-footer a {
-      color: #2563a8;
-      text-decoration: none;
-      font-weight: 500;
-      transition: opacity 0.15s;
-    }
-
-    .ks-footer a:hover { opacity: 0.7; text-decoration: underline; }
-
     .ks-footer .github-link {
       display: inline-flex;
       align-items: center;
@@ -218,14 +275,13 @@
       color: #2563a8;
       font-weight: 500;
       text-decoration: none;
+      transition: opacity 0.15s;
     }
 
-    .ks-footer .github-link svg {
-      width: 14px; height: 14px;
-      fill: #2563a8;
-    }
-
+    .ks-footer .github-link svg { width: 14px; height: 14px; fill: #2563a8; }
     .ks-footer .github-link:hover { opacity: 0.7; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 420px) {
       .ks-grid { grid-template-columns: 1fr; }
@@ -263,12 +319,12 @@
           </div>
 
           <div class="ks-field">
-            <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm</span></label>
+            <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm/kg</span></label>
             <input class="ks-input" type="text" id="osmolarity" name="osmolarity" placeholder="e.g. 750" autocomplete="off">
           </div>
 
           <div class="ks-field">
-            <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mMho</span></label>
+            <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mS/cm</span></label>
             <input class="ks-input" type="text" id="conductivity" name="conductivity" placeholder="e.g. 14.0" autocomplete="off">
           </div>
 
@@ -311,6 +367,92 @@
             <div class="ks-result-sub">{{ prediction_text }}</div>
           </div>
         </div>
+
+        {% if risk_score is defined %}
+        <div class="ks-gauge-card">
+          <p class="ks-gauge-title">Risk Probability Gauge</p>
+          <svg class="ks-gauge-svg" viewBox="0 0 220 130">
+            <!-- Background track -->
+            <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="butt"/>
+            <!-- Colored arc segments -->
+            <path id="arcLow"  d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#22c55e" stroke-width="18" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke-linecap="butt"/>
+            <path id="arcMed"  d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#f59e0b" stroke-width="18" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke-linecap="butt"/>
+            <path id="arcHigh" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#ef4444" stroke-width="18" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke-linecap="butt"/>
+            <!-- Needle -->
+            <line id="gaugeNeedle" x1="110" y1="110" x2="110" y2="28" stroke="#1e293b" stroke-width="3" stroke-linecap="round" transform="rotate(-90, 110, 110)"/>
+            <circle cx="110" cy="110" r="6" fill="#1e293b"/>
+            <!-- Labels -->
+            <text x="14"  y="126" font-size="9" fill="#94a3b8" font-family="DM Sans,sans-serif">0%</text>
+            <text x="101" y="20"  font-size="9" fill="#94a3b8" font-family="DM Sans,sans-serif">50%</text>
+            <text x="192" y="126" font-size="9" fill="#94a3b8" font-family="DM Sans,sans-serif" text-anchor="end">100%</text>
+          </svg>
+          <div class="ks-gauge-center">
+            <div class="ks-gauge-score" id="gaugeScore">0%</div>
+            <div class="ks-gauge-sublabel" id="gaugeSublabel">—</div>
+          </div>
+          <div class="ks-gauge-bands">
+            <span class="band low"    id="bandLow">Low (&lt;40%)</span>
+            <span class="band medium" id="bandMed">Moderate (40–70%)</span>
+            <span class="band high"   id="bandHigh">High (&gt;70%)</span>
+          </div>
+        </div>
+
+        <script>
+          (function() {
+            var score    = {{ risk_score }};
+            var fraction = score / 100;
+            var arcLen   = 282.7;
+
+            // Animate score counter
+            var scoreEl = document.getElementById('gaugeScore');
+            var start = null;
+            function animateScore(ts) {
+              if (!start) start = ts;
+              var p = Math.min((ts - start) / 900, 1);
+              var ease = 1 - Math.pow(1 - p, 3);
+              scoreEl.textContent = Math.round(ease * score) + '%';
+              if (p < 1) requestAnimationFrame(animateScore);
+            }
+            requestAnimationFrame(animateScore);
+
+            // Rotate needle: -90deg = 0%, +90deg = 100%
+            var angle = -90 + fraction * 180;
+            document.getElementById('gaugeNeedle')
+              .setAttribute('transform', 'rotate(' + angle + ', 110, 110)');
+
+            // Draw arc segments
+            function setArc(id, startFrac, endFrac) {
+              var el = document.getElementById(id);
+              if (endFrac <= startFrac) { el.style.display = 'none'; return; }
+              var segLen   = (endFrac - startFrac) * arcLen;
+              var startOff = startFrac * arcLen;
+              el.setAttribute('stroke-dasharray', segLen + ' ' + (arcLen - segLen));
+              el.setAttribute('stroke-dashoffset', -startOff);
+            }
+
+            var lowEnd  = Math.min(fraction, 0.40);
+            var medEnd  = Math.min(Math.max(fraction - 0.40, 0), 0.30);
+            var highEnd = Math.max(fraction - 0.70, 0);
+
+            setArc('arcLow',  0,    lowEnd);
+            setArc('arcMed',  0.40, 0.40 + medEnd);
+            setArc('arcHigh', 0.70, 0.70 + highEnd);
+
+            // Active band label
+            var sublabel = document.getElementById('gaugeSublabel');
+            if (score < 40) {
+              sublabel.textContent = 'Low risk level';
+              document.getElementById('bandLow').classList.add('active');
+            } else if (score < 70) {
+              sublabel.textContent = 'Moderate risk level';
+              document.getElementById('bandMed').classList.add('active');
+            } else {
+              sublabel.textContent = 'High risk level';
+              document.getElementById('bandHigh').classList.add('active');
+            }
+          })();
+        </script>
+        {% endif %}
         {% endif %}
 
       </form>
@@ -358,10 +500,6 @@
       btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Analyzing…`;
     });
   </script>
-
-  <style>
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
 
 </body>
 </html>
