@@ -1,60 +1,349 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ENjt0lDkZOxsY5yV6t3mf8pMDtnLyn+PGoZjEh5wD1yGMsMEkgLa6JkMskK9WHR" crossorigin="anonymous">
-    <title>Kidney Stone Prediction</title>
-</head>
-<body>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8 col-sm-10">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h3>Kidney Stone Prediction Form</h3>
-                    </div>
-                    <div class="card-body">
-                        <form action="/predict" method="POST">
-                            <div class="mb-3">
-                                <label for="gravity" class="form-label">Specific Gravity</label>
-                                <input type="text" id="gravity" name="gravity" class="form-control" placeholder="Enter specific gravity">
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="ph" class="form-label">pH</label>
-                                <input type="text" id="ph" name="ph" class="form-control" placeholder="Enter pH value">
-                            </div>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
-                            <div class="mb-3">
-                                <label for="osmolarity" class="form-label">Osmolarity</label>
-                                <input type="text" id="osmolarity" name="osmolarity" class="form-control" placeholder="Enter osmolarity">
-                            </div>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-                            <div class="mb-3">
-                                <label for="conductivity" class="form-label">Conductivity</label>
-                                <input type="text" id="conductivity" name="conductivity" class="form-control" placeholder="Enter conductivity">
-                            </div>
+  .ks-wrap {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background: #f0f4f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
 
-                            <div class="mb-3">
-                                <label for="urea" class="form-label">Urea Concentration</label>
-                                <input type="text" id="urea" name="urea" class="form-control" placeholder="Enter urea concentration">
-                            </div>
+  .ks-card {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  }
 
-                            <div class="mb-3">
-                                <label for="calcium" class="form-label">Calcium Concentration</label>
-                                <input type="text" id="calcium" name="calcium" class="form-control" placeholder="Enter calcium concentration">
-                            </div>
+  .ks-header {
+    background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
+    padding: 2rem 2rem 1.6rem;
+    position: relative;
+    overflow: hidden;
+  }
 
-                            <button type="submit" class="btn btn-primary w-100">Predict</button>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <p class="text-muted">{{ prediction_text }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  .ks-header::before {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .ks-header::after {
+    content: '';
+    position: absolute;
+    right: 30px; top: 40px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .ks-icon {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .ks-icon svg { width: 22px; height: 22px; fill: #fff; }
+
+  .ks-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+
+  .ks-header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+  }
+
+  .ks-body {
+    padding: 1.8rem 2rem;
+  }
+
+  .ks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .ks-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ks-field.full { grid-column: 1 / -1; }
+
+  .ks-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #64748b;
+  }
+
+  .ks-unit {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #94a3b8;
+    margin-left: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+
+  .ks-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    width: 100%;
+  }
+
+  .ks-input::placeholder { color: #cbd5e1; font-size: 14px; }
+
+  .ks-input:focus {
+    border-color: #2563a8;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,168,0.1);
+  }
+
+  .ks-input.error { border-color: #ef4444; background: #fff5f5; }
+  .ks-input.valid { border-color: #10b981; }
+
+  .ks-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+
+  .ks-divider {
+    border: none;
+    border-top: 1px solid #f1f5f9;
+    margin: 1.4rem 0;
+  }
+
+  .ks-btn {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #1a3c5e 0%, #2563a8 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: opacity 0.15s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .ks-btn:hover { opacity: 0.9; }
+  .ks-btn:active { transform: scale(0.99); }
+  .ks-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .ks-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+
+  .ks-result {
+    margin-top: 1.2rem;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .ks-result.show { display: flex; }
+  .ks-result.positive { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+  .ks-result.negative { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+  .ks-result-icon { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+
+  .ks-result-text { flex: 1; }
+  .ks-result-title { font-weight: 600; font-size: 13px; letter-spacing: 0.2px; }
+  .ks-result-sub { font-size: 12px; font-weight: 400; margin-top: 2px; opacity: 0.8; }
+
+  .ks-footer {
+    padding: 1rem 2rem;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    text-align: center;
+  }
+
+  .ks-footer p {
+    font-size: 11.5px;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  .ks-footer strong { color: #64748b; font-weight: 500; }
+
+  @media (max-width: 420px) {
+    .ks-grid { grid-template-columns: 1fr; }
+    .ks-body { padding: 1.4rem 1.2rem; }
+    .ks-header { padding: 1.6rem 1.2rem; }
+  }
+</style>
+
+<div class="ks-wrap">
+  <div class="ks-card">
+    <div class="ks-header">
+      <div class="ks-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.5 2 6 5 6 8.5C6 13 9 16 9 19C9 20.7 10.3 22 12 22C13.7 22 15 20.7 15 19C15 16 18 13 18 8.5C18 5 15.5 2 12 2Z"/>
+        </svg>
+      </div>
+      <h1>Kidney Stone Prediction</h1>
+      <p>Enter urine analysis values to assess kidney stone risk</p>
     </div>
-</body>
-</html>
+
+    <div class="ks-body">
+      <form id="ksForm" action="/predict" method="POST" onsubmit="handleSubmit(event)" novalidate>
+        <div class="ks-grid">
+
+          <div class="ks-field">
+            <label class="ks-label" for="gravity">Specific Gravity <span class="ks-unit">g/mL</span></label>
+            <input class="ks-input" type="text" id="gravity" name="gravity" placeholder="e.g. 1.020" autocomplete="off">
+            <span class="ks-hint">Normal: 1.005–1.030</span>
+          </div>
+
+          <div class="ks-field">
+            <label class="ks-label" for="ph">pH Level <span class="ks-unit">0–14</span></label>
+            <input class="ks-input" type="text" id="ph" name="ph" placeholder="e.g. 6.5" autocomplete="off">
+            <span class="ks-hint">Normal: 4.5–8.0</span>
+          </div>
+
+          <div class="ks-field">
+            <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm/kg</span></label>
+            <input class="ks-input" type="text" id="osmolarity" name="osmolarity" placeholder="e.g. 750" autocomplete="off">
+            <span class="ks-hint">Normal: 300–900</span>
+          </div>
+
+          <div class="ks-field">
+            <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mS/cm</span></label>
+            <input class="ks-input" type="text" id="conductivity" name="conductivity" placeholder="e.g. 14.0" autocomplete="off">
+            <span class="ks-hint">Normal: 5–38</span>
+          </div>
+
+          <div class="ks-field">
+            <label class="ks-label" for="urea">Urea Concentration <span class="ks-unit">mmol/L</span></label>
+            <input class="ks-input" type="text" id="urea" name="urea" placeholder="e.g. 320" autocomplete="off">
+            <span class="ks-hint">Normal: 100–500</span>
+          </div>
+
+          <div class="ks-field">
+            <label class="ks-label" for="calcium">Calcium Concentration <span class="ks-unit">mmol/L</span></label>
+            <input class="ks-input" type="text" id="calcium" name="calcium" placeholder="e.g. 4.0" autocomplete="off">
+            <span class="ks-hint">Normal: 2.0–8.0</span>
+          </div>
+
+        </div>
+
+        <hr class="ks-divider">
+
+        <button type="submit" class="ks-btn" id="submitBtn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Run Prediction
+        </button>
+
+        <div class="ks-result" id="resultBox">
+          <svg class="ks-result-icon" id="resultIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div class="ks-result-text">
+            <div class="ks-result-title" id="resultTitle"></div>
+            <div class="ks-result-sub" id="resultSub"></div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="ks-footer">
+      <p><strong>For demonstration purposes only.</strong> This tool does not replace clinical diagnosis. Please consult a qualified healthcare professional.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const inputs = document.querySelectorAll('.ks-input');
+  inputs.forEach(inp => {
+    inp.addEventListener('input', () => {
+      inp.classList.remove('error');
+      if (inp.value.trim() !== '' && !isNaN(parseFloat(inp.value))) {
+        inp.classList.add('valid');
+      } else {
+        inp.classList.remove('valid');
+      }
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    let valid = true;
+    inputs.forEach(inp => {
+      if (!inp.value.trim() || isNaN(parseFloat(inp.value))) {
+        inp.classList.add('error');
+        inp.classList.remove('valid');
+        valid = false;
+      }
+    });
+
+    if (!valid) {
+      showResult('error', 'Missing or invalid values', 'Please fill in all fields with valid numeric values.');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Analyzing…`;
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Run Prediction`;
+      e.target.submit();
+    }, 1200);
+  }
+
+  function showResult(type, title, sub) {
+    const box = document.getElementById('resultBox');
+    box.className = 'ks-result show ' + (type === 'error' ? 'positive' : type === 'positive' ? 'positive' : 'negative');
+    document.getElementById('resultTitle').textContent = title;
+    document.getElementById('resultSub').textContent = sub;
+  }
+
+  const style = document.createElement('style');
+  style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+  document.head.appendChild(style);
+</script>
