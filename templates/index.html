@@ -263,12 +263,12 @@
           </div>
 
           <div class="ks-field">
-            <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm</span></label>
+            <label class="ks-label" for="osmolarity">Osmolarity <span class="ks-unit">mOsm/kg</span></label>
             <input class="ks-input" type="text" id="osmolarity" name="osmolarity" placeholder="e.g. 750" autocomplete="off">
           </div>
 
           <div class="ks-field">
-            <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mMho</span></label>
+            <label class="ks-label" for="conductivity">Conductivity <span class="ks-unit">mS/cm</span></label>
             <input class="ks-input" type="text" id="conductivity" name="conductivity" placeholder="e.g. 14.0" autocomplete="off">
           </div>
 
@@ -294,7 +294,7 @@
         </button>
 
         {% if prediction_text %}
-        <div class="ks-result {{ 'positive' if 'risk' in prediction_text.lower() else 'negative' }}">
+        <div class="ks-result {{ 'negative' if 'not at risk' in prediction_text.lower() else 'positive' }}">
           <svg class="ks-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/>
             <line x1="12" y1="8" x2="12" y2="12"/>
@@ -302,10 +302,10 @@
           </svg>
           <div>
             <div class="ks-result-title">
-              {% if 'risk' in prediction_text.lower() %}
-                Risk Detected
-              {% else %}
+              {% if 'not at risk' in prediction_text.lower() %}
                 No Risk Detected
+              {% else %}
+                Risk Detected
               {% endif %}
             </div>
             <div class="ks-result-sub">{{ prediction_text }}</div>
